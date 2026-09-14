@@ -48,21 +48,26 @@ const server = http.createServer(async (req, res) => {
       
       const { stdout, stderr } = await execAsync(command, { 
         env,
-        shell: '/bin/bash'
+        shell: '/bin/bash',
+        encoding: 'utf8'
       });
+      
+      // Combine stdout and stderr for full output
+      const fullOutput = (stdout || '') + (stderr || '');
       
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ 
         success: true, 
-        stdout, 
+        stdout: fullOutput, 
         stderr 
       }));
     } catch (error) {
       console.error('[HTTP Server] Error:', error.message);
+      const fullOutput = (error.stdout || '') + (error.stderr || '');
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ 
         success: false, 
-        error: error.message 
+        error: error.message + '\n' + fullOutput
       }));
     }
   } else if (req.method === 'POST' && req.url === '/update-env') {
