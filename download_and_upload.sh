@@ -42,7 +42,7 @@ echo "[$(date -Iseconds)] Installing required tools..."
 # Install Python and yt-dlp
 sudo apt-get update -qq
 sudo apt-get install -y python3 python3-pip python3-venv -qq
-pip3 install --user yt-dlp -qq
+pip3 install --break-system-packages --user yt-dlp -qq
 export PATH="$HOME/.local/bin:$PATH"
 
 echo "[$(date -Iseconds)] yt-dlp version: $(yt-dlp --version)"
@@ -124,6 +124,7 @@ echo "[$(date -Iseconds)] Downloaded file: $DOWNLOADED_FILE"
 FILE_SIZE=$(stat -c%s "$DOWNLOADED_FILE")
 echo "[$(date -Iseconds)] File size: $FILE_SIZE bytes"
 
+npm install googleapis --prefix "$TEMP_DIR"
 # Upload to Drive
 echo "[$(date -Iseconds)] Starting upload to Google Drive..."
 
