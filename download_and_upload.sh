@@ -115,8 +115,8 @@ fi
 
 echo "[$(date -Iseconds)] Download completed successfully"
 
-# Find downloaded file
-DOWNLOADED_FILE=$(find "$TEMP_DIR" -type f -not -name ".*" | head -1)
+# Find downloaded video file
+DOWNLOADED_FILE=$(find "$TEMP_DIR" -type f \( -name "*.mp4" -o -name "*.webm" -o -name "*.mp3" \) | head -1)
 
 if [ -z "$DOWNLOADED_FILE" ]; then
     echo "[$(date -Iseconds)] ERROR: No downloaded file found"
