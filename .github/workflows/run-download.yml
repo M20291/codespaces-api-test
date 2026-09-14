@@ -28,10 +28,12 @@ jobs:
           echo "✅ YOUTUBE_COOKIES secret found, length: ${#YOUTUBE_COOKIES_CONTENT}"
           echo "$YOUTUBE_COOKIES_CONTENT" > /tmp/cookies.txt
           COOKIES_BASE64=$(base64 -w 0 /tmp/cookies.txt)
-          echo "COOKIES_BASE64=$COOKIES_BASE64" >> $GITHUB_ENV
+          echo "COOKIES_BASE64 length: ${#COOKIES_BASE64}"
+          echo "$COOKIES_BASE64" > /tmp/cookies_base64.txt
 
       - name: Send command to HTTP server
         run: |
+          COOKIES_BASE64=$(cat /tmp/cookies_base64.txt)
           echo "HTTP_SERVER_URL: ${{ secrets.HTTP_SERVER_URL }}"
           echo "VIDEO_URL: ${{ github.event.inputs.video_url }}"
           echo "COOKIES_BASE64 length: ${#COOKIES_BASE64}"
