@@ -1,6 +1,11 @@
 ﻿{
   "name": "YouTube to Drive Codespaces",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+    "ghcr.io/devcontainers/features/sshd:1": {
+      "version": "latest"
+    }
+  },
   "remoteEnv": {},
   "postStartCommand": "node /workspaces/codespaces-api-test/http-command-server.js &",
   "forwardPorts": [3000],
