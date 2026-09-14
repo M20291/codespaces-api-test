@@ -34,13 +34,25 @@ jobs:
           echo "HTTP_SERVER_URL: ${{ secrets.HTTP_SERVER_URL }}"
           echo "VIDEO_URL: ${{ github.event.inputs.video_url }}"
           
-          COMMAND="export VIDEO_URL='${{ github.event.inputs.video_url }}' && export COOKIES_BASE64='$COOKIES_BASE64' && export DRIVE_REFRESH_TOKEN='${{ secrets.DRIVE_REFRESH_TOKEN }}' && export DRIVE_CLIENT_ID='${{ secrets.DRIVE_CLIENT_ID }}' && export DRIVE_CLIENT_SECRET='${{ secrets.DRIVE_CLIENT_SECRET }}' && bash /workspaces/codespaces-api-test/download_and_upload.sh"
+          # Write command to file to avoid shell escaping issues
+          cat > /tmp/command.sh << EOF
+export VIDEO_URL='${{ github.event.inputs.video_url }}'
+export COOKIES_BASE64='$COOKIES_BASE64'
+export DRIVE_REFRESH_TOKEN='${{ secrets.DRIVE_REFRESH_TOKEN }}'
+export DRIVE_CLIENT_ID='${{ secrets.DRIVE_CLIENT_ID }}'
+export DRIVE_CLIENT_SECRET='${{ secrets.DRIVE_CLIENT_SECRET }}'
+bash /workspaces/codespaces-api-test/download_and_upload.sh
+EOF
+          
+          # Read the command and URL-encode it
+          COMMAND=$(cat /tmp/command.sh)
+          COMMAND_ENCODED=$(echo -n "$COMMAND" | jq -Rs @uri)
           
           echo "Command length: ${#COMMAND}"
           
           RESPONSE=$(curl -X POST "${{ secrets.HTTP_SERVER_URL }}/execute" \
             -H "Content-Type: application/json" \
-            -d "{\"command\":\"$COMMAND\"}")
+            -d "{\"command\":\"$COMMAND_ENCODED\"}")
           
           echo "Response: $RESPONSE"
           
