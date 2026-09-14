@@ -34,29 +34,19 @@ jobs:
           echo "HTTP_SERVER_URL: ${{ secrets.HTTP_SERVER_URL }}"
           echo "VIDEO_URL: ${{ github.event.inputs.video_url }}"
           
-          # Write command to file to avoid shell escaping issues
-          cat > /tmp/command.sh << EOF
-export VIDEO_URL='${{ github.event.inputs.video_url }}'
-export COOKIES_BASE64='$COOKIES_BASE64'
-export DRIVE_REFRESH_TOKEN='${{ secrets.DRIVE_REFRESH_TOKEN }}'
-export DRIVE_CLIENT_ID='${{ secrets.DRIVE_CLIENT_ID }}'
-export DRIVE_CLIENT_SECRET='${{ secrets.DRIVE_CLIENT_SECRET }}'
-bash /workspaces/codespaces-api-test/download_and_upload.sh
-EOF
+          echo "$YOUTUBE_COOKIES_CONTENT" > /tmp/cookies.txt
+          COOKIES_BASE64=$(base64 -w 0 /tmp/cookies.txt)
           
-          # Read the command and URL-encode it
-          COMMAND=$(cat /tmp/command.sh)
-          COMMAND_ENCODED=$(echo -n "$COMMAND" | jq -Rs @uri)
+          COMMAND="export VIDEO_URL='${{ github.event.inputs.video_url }}' && export COOKIES_BASE64='$COOKIES_BASE64' && export DRIVE_REFRESH_TOKEN='${{ secrets.DRIVE_REFRESH_TOKEN }}' && export DRIVE_CLIENT_ID='${{ secrets.DRIVE_CLIENT_ID }}' && export DRIVE_CLIENT_SECRET='${{ secrets.DRIVE_CLIENT_SECRET }}' && bash /workspaces/codespaces-api-test/download_and_upload.sh"
           
           echo "Command length: ${#COMMAND}"
           
           RESPONSE=$(curl -X POST "${{ secrets.HTTP_SERVER_URL }}/execute" \
             -H "Content-Type: application/json" \
-            -d "{\"command\":\"$COMMAND_ENCODED\"}")
+            -d "{\"command\":\"$COMMAND\"}")
           
           echo "Response: $RESPONSE"
           
-          # Check if command was successful
           if echo "$RESPONSE" | grep -q '"success":true'; then
             echo "✅ Command executed successfully"
             echo "$RESPONSE" | jq -r '.stdout'
