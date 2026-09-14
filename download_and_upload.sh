@@ -127,9 +127,9 @@ echo "[$(date -Iseconds)] File size: $FILE_SIZE bytes"
 # Upload to Drive
 echo "[$(date -Iseconds)] Starting upload to Google Drive..."
 
-if [ -z "$DRIVE_TOKEN" ] || [ -z "$DRIVE_REFRESH_TOKEN" ] || [ -z "$DRIVE_CLIENT_ID" ] || [ -z "$DRIVE_CLIENT_SECRET" ]; then
+if [ -z "$DRIVE_REFRESH_TOKEN" ] || [ -z "$DRIVE_CLIENT_ID" ] || [ -z "$DRIVE_CLIENT_SECRET" ]; then
     echo "[$(date -Iseconds)] ERROR: Google Drive credentials not set"
-    echo "[$(date -Iseconds)] Please set DRIVE_TOKEN, DRIVE_REFRESH_TOKEN, DRIVE_CLIENT_ID, DRIVE_CLIENT_SECRET"
+    echo "[$(date -Iseconds)] Please set DRIVE_REFRESH_TOKEN, DRIVE_CLIENT_ID, DRIVE_CLIENT_SECRET"
     echo "[$(date -Iseconds)] File saved locally: $DOWNLOADED_FILE"
     echo "[$(date -Iseconds)] Please upload manually or set Drive credentials"
     echo "[$(date -Iseconds)] Process completed with warnings"
@@ -144,7 +144,6 @@ import { readFileSync } from 'fs';
 import { Readable } from 'stream';
 
 const credentials = {
-  token: process.env.DRIVE_TOKEN,
   refresh_token: process.env.DRIVE_REFRESH_TOKEN,
   token_uri: "https://oauth2.googleapis.com/token",
   client_id: process.env.DRIVE_CLIENT_ID,
