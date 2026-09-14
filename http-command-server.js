@@ -48,7 +48,7 @@ const server = http.createServer(async (req, res) => {
       
       const { stdout, stderr } = await execAsync(command, { 
         env,
-        stdio: 'inherit'
+        shell: '/bin/bash'
       });
       
       res.writeHead(200, { 'Content-Type': 'application/json' });
