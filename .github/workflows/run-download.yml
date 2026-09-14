@@ -7,6 +7,9 @@ on:
         required: true
         default: "https://youtu.be/ooWuq064T28"
 
+permissions:
+  codespaces: write
+
 jobs:
   run-script:
     runs-on: ubuntu-latest
