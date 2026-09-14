@@ -1,8 +1,6 @@
-{
+﻿{
   "name": "YouTube to Drive Codespaces",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
   "remoteEnv": {},
   "postStartCommand": "node /workspaces/codespaces-api-test/http-command-server.js &",
   "forwardPorts": [3000],
