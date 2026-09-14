@@ -42,8 +42,8 @@ echo "[$(date -Iseconds)] Installing required tools..."
 # Install Python and yt-dlp
 sudo apt-get update -qq
 sudo apt-get install -y python3 python3-pip python3-venv -qq
-pip3 install --user yt-dlp -qq
-export PATH="$HOME/.local/bin:$PATH"
+pip3 install --user --upgrade --break-system-packages yt-dlp -qq
+export PATH="$HOME/.local/bin:$HOME/.deno/bin:$PATH"
 
 echo "[$(date -Iseconds)] yt-dlp version: $(yt-dlp --version)"
 
@@ -126,6 +126,9 @@ echo "[$(date -Iseconds)] File size: $FILE_SIZE bytes"
 
 # Upload to Drive
 echo "[$(date -Iseconds)] Starting upload to Google Drive..."
+
+# Install googleapis in temp directory for upload
+npm install googleapis --prefix "$TEMP_DIR"
 
 if [ -z "$DRIVE_REFRESH_TOKEN" ] || [ -z "$DRIVE_CLIENT_ID" ] || [ -z "$DRIVE_CLIENT_SECRET" ]; then
     echo "[$(date -Iseconds)] ERROR: Google Drive credentials not set"
