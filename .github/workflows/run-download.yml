@@ -19,6 +19,10 @@ jobs:
           echo "${{ secrets.GITHUB_TOKEN }}" > gh_token.txt
           gh auth login --with-token < gh_token.txt
 
+      - name: Start codespace if needed
+        run: |
+          gh codespace start supreme-acorn-wvgpgj5jrr792vqg6 || echo "Codespace already running"
+
       - name: Run script in codespace
         run: |
           gh codespace ssh -c supreme-acorn-wvgpgj5jrr792vqg6 -- \
