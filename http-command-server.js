@@ -46,7 +46,10 @@ const server = http.createServer(async (req, res) => {
         DRIVE_CLIENT_SECRET: drive_client_secret
       };
       
-      const { stdout, stderr } = await execAsync(command, { env });
+      const { stdout, stderr } = await execAsync(command, { 
+        env,
+        stdio: 'inherit'
+      });
       
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ 
