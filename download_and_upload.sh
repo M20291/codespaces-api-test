@@ -157,6 +157,10 @@ import { google } from 'googleapis';
 import { readFileSync } from 'fs';
 import { Readable } from 'stream';
 
+console.log('DEBUG: DRIVE_REFRESH_TOKEN:', process.env.DRIVE_REFRESH_TOKEN ? 'SET' : 'NOT SET');
+console.log('DEBUG: DRIVE_CLIENT_ID:', process.env.DRIVE_CLIENT_ID ? 'SET' : 'NOT SET');
+console.log('DEBUG: DRIVE_CLIENT_SECRET:', process.env.DRIVE_CLIENT_SECRET ? 'SET' : 'NOT SET');
+
 const credentials = {
   refresh_token: process.env.DRIVE_REFRESH_TOKEN,
   token_uri: "https://oauth2.googleapis.com/token",
@@ -167,6 +171,10 @@ const credentials = {
     "https://www.googleapis.com/auth/drive.metadata.readonly"
   ]
 };
+
+console.log('DEBUG: credentials.client_id:', credentials.client_id ? 'SET' : 'NOT SET');
+console.log('DEBUG: credentials.client_secret:', credentials.client_secret ? 'SET' : 'NOT SET');
+console.log('DEBUG: credentials.refresh_token:', credentials.refresh_token ? 'SET' : 'NOT SET');
 
 const oauth2Client = new google.auth.OAuth2(
   credentials.client_id,
