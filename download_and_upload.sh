@@ -23,6 +23,15 @@ if [ -f "config.json" ]; then
     DRIVE_CLIENT_SECRET=$(cat config.json | grep -o '"drive_client_secret"[^,]*' | cut -d'"' -f4)
 fi
 
+# Debug: Print all environment variables
+echo "[$(date -Iseconds)] DEBUG: Environment variables:"
+echo "[$(date -Iseconds)] DEBUG: VIDEO_URL=${VIDEO_URL}"
+echo "[$(date -Iseconds)] DEBUG: COOKIES_BASE64=${COOKIES_BASE64:0:50}..."
+echo "[$(date -Iseconds)] DEBUG: DRIVE_REFRESH_TOKEN=${DRIVE_REFRESH_TOKEN:0:20}..."
+echo "[$(date -Iseconds)] DEBUG: DRIVE_CLIENT_ID=${DRIVE_CLIENT_ID}"
+echo "[$(date -Iseconds)] DEBUG: DRIVE_CLIENT_SECRET=${DRIVE_CLIENT_SECRET}"
+echo ""
+
 # Check required environment variables
 if [ -z "$VIDEO_URL" ]; then
     echo "[$(date -Iseconds)] ERROR: VIDEO_URL not set"
