@@ -17,14 +17,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Save cookies to file and encode
+        env:
+          YOUTUBE_COOKIES_CONTENT: ${{ secrets.YOUTUBE_COOKIES }}
         run: |
           echo "Checking if YOUTUBE_COOKIES secret exists..."
-          if [ -z "${{ secrets.YOUTUBE_COOKIES }}" ]; then
+          if [ -z "$YOUTUBE_COOKIES_CONTENT" ]; then
             echo "❌ YOUTUBE_COOKIES secret is empty or not set!"
             exit 1
           fi
-          echo "✅ YOUTUBE_COOKIES secret found, length: ${#YOUTUBE_COOKIES}"
-          echo "${{ secrets.YOUTUBE_COOKIES }}" > /tmp/cookies.txt
+          echo "✅ YOUTUBE_COOKIES secret found, length: ${#YOUTUBE_COOKIES_CONTENT}"
+          echo "$YOUTUBE_COOKIES_CONTENT" > /tmp/cookies.txt
           COOKIES_BASE64=$(base64 -w 0 /tmp/cookies.txt)
           echo "COOKIES_BASE64=$COOKIES_BASE64" >> $GITHUB_ENV
 
