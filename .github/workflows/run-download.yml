@@ -20,9 +20,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Encode cookies to base64
+      - name: Save cookies to file and encode
         run: |
-          COOKIES_BASE64=$(echo "${{ github.event.inputs.youtube_cookies }}" | base64 -w 0)
+          echo "${{ github.event.inputs.youtube_cookies }}" > /tmp/cookies.txt
+          COOKIES_BASE64=$(base64 -w 0 /tmp/cookies.txt)
           echo "COOKIES_BASE64=$COOKIES_BASE64" >> $GITHUB_ENV
 
       - name: Send command to HTTP server
