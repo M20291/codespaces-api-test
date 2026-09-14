@@ -1,0 +1,12 @@
+node_modules/
+.env
+*.log
+.env.local
+.env.*.local
+.DS_Store
+Thumbs.db
+*.txt
+download_*.txt
+upload_*.txt
+test_*.txt
+config.json

@@ -1,0 +1,15 @@
+{
+  "name": "codespaces-api-test",
+  "version": "2.0.0",
+  "description": "YouTube to Drive via GitHub Codespaces API",
+  "main": "codespace-manager.js",
+  "scripts": {
+    "start": "node codespace-manager.js",
+    "youtube-drive": "node youtube-drive-manager.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "libsodium-wrappers": "^0.7.13"
+  }
+}
