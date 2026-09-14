@@ -74,6 +74,10 @@ echo "[$(date -Iseconds)] Starting download..."
 DOWNLOAD_LOG="$TEMP_DIR/download.log"
 
 # Create cookies file if provided
+if [ -n "$COOKIES_BASE64" ]; then
+    COOKIES=$(echo "$COOKIES_BASE64" | base64 -d)
+fi
+
 if [ -n "$COOKIES" ]; then
     echo "[$(date -Iseconds)] Creating cookies file..."
     if [ "$PLATFORM" = "youtube" ]; then
