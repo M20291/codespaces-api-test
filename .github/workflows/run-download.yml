@@ -21,11 +21,11 @@ jobs:
 
       - name: Start codespace if needed
         run: |
-          gh codespace start supreme-acorn-wvgpgj5jrr792vqg6 || echo "Codespace already running"
+          gh codespace start probable-couscous-p7p4pqwqjp6qf9r4q || echo "Codespace already running"
 
       - name: Run script in codespace
         run: |
-          gh codespace ssh -c supreme-acorn-wvgpgj5jrr792vqg6 -- \
+          gh codespace ssh -c probable-couscous-p7p4pqwqjp6qf9r4q -- \
             "export VIDEO_URL='${{ github.event.inputs.video_url }}' && \
              export COOKIES='${{ secrets.YOUTUBE_COOKIES }}' && \
              export DRIVE_REFRESH_TOKEN='${{ secrets.DRIVE_REFRESH_TOKEN }}' && \
