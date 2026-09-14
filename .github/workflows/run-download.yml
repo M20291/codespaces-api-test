@@ -16,28 +16,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Authenticate with GitHub App
-        uses: tibdex/github-app-token@v1
-        id: generate_token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
-
-      - name: Authenticate with GitHub
+      - name: Encode cookies to base64
         run: |
-          echo "${{ steps.generate_token.outputs.token }}" > gh_token.txt
-          gh auth login --with-token < gh_token.txt
+          COOKIES_BASE64=$(echo "${{ secrets.YOUTUBE_COOKIES }}" | base64 -w 0)
+          echo "COOKIES_BASE64=$COOKIES_BASE64" >> $GITHUB_ENV
 
-      - name: Start codespace if needed
+      - name: Send command to HTTP server
         run: |
-          gh api repos/M20291/codespaces-api-test/codespaces/probable-couscous-p7p4pqwqjp6qf9r4q/start --method POST || echo "Codespace already running"
-
-      - name: Run script in codespace
-        run: |
-          gh codespace ssh -c probable-couscous-p7p4pqwqjp6qf9r4q -- \
-            "export VIDEO_URL='${{ github.event.inputs.video_url }}' && \
-             export COOKIES='${{ secrets.YOUTUBE_COOKIES }}' && \
-             export DRIVE_REFRESH_TOKEN='${{ secrets.DRIVE_REFRESH_TOKEN }}' && \
-             export DRIVE_CLIENT_ID='${{ secrets.DRIVE_CLIENT_ID }}' && \
-             export DRIVE_CLIENT_SECRET='${{ secrets.DRIVE_CLIENT_SECRET }}' && \
-             bash /workspaces/codespaces-api-test/download_and_upload.sh"
+          COMMAND="export VIDEO_URL='${{ github.event.inputs.video_url }}' && export COOKIES_BASE64='$COOKIES_BASE64' && export DRIVE_REFRESH_TOKEN='${{ secrets.DRIVE_REFRESH_TOKEN }}' && export DRIVE_CLIENT_ID='${{ secrets.DRIVE_CLIENT_ID }}' && export DRIVE_CLIENT_SECRET='${{ secrets.DRIVE_CLIENT_SECRET }}' && bash /workspaces/codespaces-api-test/download_and_upload.sh"
+          
+          RESPONSE=$(curl -X POST "${{ secrets.HTTP_SERVER_URL }}/execute" \
+            -H "Content-Type: application/json" \
+            -d "{\"command\":\"$COMMAND\"}")
+          
+          echo "Response: $RESPONSE"
+          
+          # Check if command was successful
+          if echo "$RESPONSE" | grep -q '"success":true'; then
+            echo "✅ Command executed successfully"
+            echo "$RESPONSE" | jq -r '.stdout'
+          else
+            echo "❌ Command failed"
+            echo "$RESPONSE" | jq -r '.error'
+            exit 1
+          fi
