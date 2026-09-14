@@ -36,14 +36,17 @@ const server = http.createServer(async (req, res) => {
 
       console.log(`[HTTP Server] Executing command: ${command}`);
       
-      // Set environment variables before running command
-      if (cookies_base64) process.env.COOKIES_BASE64 = cookies_base64;
-      if (video_url) process.env.VIDEO_URL = video_url;
-      if (drive_refresh_token) process.env.DRIVE_REFRESH_TOKEN = drive_refresh_token;
-      if (drive_client_id) process.env.DRIVE_CLIENT_ID = drive_client_id;
-      if (drive_client_secret) process.env.DRIVE_CLIENT_SECRET = drive_client_secret;
+      // Create environment object for child process
+      const env = {
+        ...process.env,
+        COOKIES_BASE64: cookies_base64,
+        VIDEO_URL: video_url,
+        DRIVE_REFRESH_TOKEN: drive_refresh_token,
+        DRIVE_CLIENT_ID: drive_client_id,
+        DRIVE_CLIENT_SECRET: drive_client_secret
+      };
       
-      const { stdout, stderr } = await execAsync(command);
+      const { stdout, stderr } = await execAsync(command, { env });
       
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ 
