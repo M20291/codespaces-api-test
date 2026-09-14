@@ -26,7 +26,7 @@ const server = http.createServer(async (req, res) => {
         req.on('end', () => resolve(data));
       });
       
-      const { command } = JSON.parse(body);
+      const { command, cookies_base64, video_url, drive_refresh_token, drive_client_id, drive_client_secret } = JSON.parse(body);
       
       if (!command) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -35,6 +35,13 @@ const server = http.createServer(async (req, res) => {
       }
 
       console.log(`[HTTP Server] Executing command: ${command}`);
+      
+      // Set environment variables before running command
+      if (cookies_base64) process.env.COOKIES_BASE64 = cookies_base64;
+      if (video_url) process.env.VIDEO_URL = video_url;
+      if (drive_refresh_token) process.env.DRIVE_REFRESH_TOKEN = drive_refresh_token;
+      if (drive_client_id) process.env.DRIVE_CLIENT_ID = drive_client_id;
+      if (drive_client_secret) process.env.DRIVE_CLIENT_SECRET = drive_client_secret;
       
       const { stdout, stderr } = await execAsync(command);
       

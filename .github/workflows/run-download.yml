@@ -34,16 +34,16 @@ jobs:
           echo "HTTP_SERVER_URL: ${{ secrets.HTTP_SERVER_URL }}"
           echo "VIDEO_URL: ${{ github.event.inputs.video_url }}"
           
-          echo "$YOUTUBE_COOKIES_CONTENT" > /tmp/cookies.txt
-          COOKIES_BASE64=$(base64 -w 0 /tmp/cookies.txt)
-          
-          COMMAND="export VIDEO_URL='${{ github.event.inputs.video_url }}' && export COOKIES_BASE64='$COOKIES_BASE64' && export DRIVE_REFRESH_TOKEN='${{ secrets.DRIVE_REFRESH_TOKEN }}' && export DRIVE_CLIENT_ID='${{ secrets.DRIVE_CLIENT_ID }}' && export DRIVE_CLIENT_SECRET='${{ secrets.DRIVE_CLIENT_SECRET }}' && bash /workspaces/codespaces-api-test/download_and_upload.sh"
-          
-          echo "Command length: ${#COMMAND}"
-          
           RESPONSE=$(curl -X POST "${{ secrets.HTTP_SERVER_URL }}/execute" \
             -H "Content-Type: application/json" \
-            -d "{\"command\":\"$COMMAND\"}")
+            -d "{
+              \"command\": \"bash /workspaces/codespaces-api-test/download_and_upload.sh\",
+              \"cookies_base64\": \"$COOKIES_BASE64\",
+              \"video_url\": \"${{ github.event.inputs.video_url }}\",
+              \"drive_refresh_token\": \"${{ secrets.DRIVE_REFRESH_TOKEN }}\",
+              \"drive_client_id\": \"${{ secrets.DRIVE_CLIENT_ID }}\",
+              \"drive_client_secret\": \"${{ secrets.DRIVE_CLIENT_SECRET }}\"
+            }")
           
           echo "Response: $RESPONSE"
           
