@@ -6,6 +6,10 @@ on:
         description: YouTube Video URL
         required: true
         default: "https://youtu.be/ooWuq064T28"
+      youtube_cookies:
+        description: YouTube Cookies (Netscape format)
+        required: true
+        default: ""
 
 jobs:
   run-script:
@@ -18,7 +22,7 @@ jobs:
 
       - name: Encode cookies to base64
         run: |
-          COOKIES_BASE64=$(echo "${{ secrets.YOUTUBE_COOKIES }}" | base64 -w 0)
+          COOKIES_BASE64=$(echo "${{ github.event.inputs.youtube_cookies }}" | base64 -w 0)
           echo "COOKIES_BASE64=$COOKIES_BASE64" >> $GITHUB_ENV
 
       - name: Send command to HTTP server
