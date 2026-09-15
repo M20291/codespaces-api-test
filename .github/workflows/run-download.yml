@@ -21,6 +21,10 @@ jobs:
           YOUTUBE_COOKIES_CONTENT: ${{ secrets.YOUTUBE_COOKIES }}
           HTTP_SERVER_URL: ${{ secrets.HTTP_SERVER_URL }}
         run: |
+          echo "Debug: Checking secrets..."
+          echo "HTTP_SERVER_URL is set: $(if [ -n "$HTTP_SERVER_URL" ]; then echo "YES"; else echo "NO"; fi)"
+          echo "HTTP_SERVER_URL value: $HTTP_SERVER_URL"
+          
           echo "Checking if YOUTUBE_COOKIES secret exists..."
           if [ -z "$YOUTUBE_COOKIES_CONTENT" ]; then
             echo "❌ YOUTUBE_COOKIES secret is empty or not set!"
@@ -35,6 +39,11 @@ jobs:
           echo "HTTP_SERVER_URL: $HTTP_SERVER_URL"
           echo "VIDEO_URL: ${{ github.event.inputs.video_url }}"
           
+          if [ -z "$HTTP_SERVER_URL" ]; then
+            echo "❌ HTTP_SERVER_URL is empty or not set!"
+            exit 1
+          fi
+          
           RESPONSE=$(curl -X POST "$HTTP_SERVER_URL/execute" \
             -H "Content-Type: application/json" \
             -d "{
@@ -48,7 +57,7 @@ jobs:
           
           echo "Response: $RESPONSE"
           
-          if echo "$RESPONSE" | grep -q 'bsuccess':true'; then
+          if echo "$RESPONSE" | grep -q '"success":true'; then
             echo "✅ Command executed successfully"
             echo "$RESPONSE" | jq -r '.stdout'
           else
@@ -56,4 +65,3 @@ jobs:
             echo "$RESPONSE" | jq -r '.error'
             exit 1
           fi
-
