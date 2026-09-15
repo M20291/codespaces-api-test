@@ -19,6 +19,7 @@ jobs:
       - name: Send command to HTTP server
         env:
           YOUTUBE_COOKIES_CONTENT: ${{ secrets.YOUTUBE_COOKIES }}
+          HTTP_SERVER_URL: ${{ secrets.HTTP_SERVER_URL }}
         run: |
           echo "Checking if YOUTUBE_COOKIES secret exists..."
           if [ -z "$YOUTUBE_COOKIES_CONTENT" ]; then
@@ -31,10 +32,10 @@ jobs:
           COOKIES_BASE64=$(base64 -w 0 /tmp/cookies.txt)
           echo "COOKIES_BASE64 length: ${#COOKIES_BASE64}"
           
-          echo "HTTP_SERVER_URL: ${{ secrets.HTTP_SERVER_URL }}"
+          echo "HTTP_SERVER_URL: $HTTP_SERVER_URL"
           echo "VIDEO_URL: ${{ github.event.inputs.video_url }}"
           
-          RESPONSE=$(curl -X POST "${{ secrets.HTTP_SERVER_URL }}/execute" \
+          RESPONSE=$(curl -X POST "$HTTP_SERVER_URL/execute" \
             -H "Content-Type: application/json" \
             -d "{
               \"command\": \"bash /workspaces/codespaces-api-test/download_and_upload.sh\",
@@ -47,7 +48,7 @@ jobs:
           
           echo "Response: $RESPONSE"
           
-          if echo "$RESPONSE" | grep -q '"success":true'; then
+          if echo "$RESPONSE" | grep -q 'bsuccess':true'; then
             echo "✅ Command executed successfully"
             echo "$RESPONSE" | jq -r '.stdout'
           else
